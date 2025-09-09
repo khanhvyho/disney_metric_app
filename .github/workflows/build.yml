@@ -1,0 +1,68 @@
+name: Build desktop binaries
+
+on:
+  # Manual trigger from the Actions tab
+  workflow_dispatch:
+  # Optional: build when you push a version tag like v1.0.0
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      # Build with the right --add-data separator per OS
+      - name: Build with PyInstaller (Windows)
+        if: runner.os == 'Windows'
+        run: >
+          pyinstaller --noconfirm --onefile --windowed
+          --name "PartnerMetrics"
+          --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl
+          --add-data "app.py;."
+          --add-data "src;src"
+          run_app.py
+
+      - name: Build with PyInstaller (macOS)
+        if: runner.os == 'macOS'
+        run: >
+          pyinstaller --noconfirm --onefile --windowed
+          --name "PartnerMetrics"
+          --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl
+          --add-data "app.py:."
+          --add-data "src:src"
+          run_app.py
+
+      # Upload artifacts so you can download the binaries from the Actions run
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: PartnerMetrics-Windows
+          path: dist/PartnerMetrics.exe
+
+      - name: Upload macOS artifact
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: PartnerMetrics-macOS
+          path: |
+            dist/PartnerMetrics
+            dist/PartnerMetrics.app
