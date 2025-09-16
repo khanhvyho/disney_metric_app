@@ -2,6 +2,8 @@
 
 Monthly Growth Tracker is a lightweight dashboard for **visualizing monthly data** and automatically **calculating both month-over-month (MoM) and year-over-year (YoY) growth**. The app is designed to help your team pull data more efficiently without altering the original dataset. If your team works with Excel datasets and needs a simple tool to save time when extracting monthly data and calculating growth metrics, this app is for you!
 
+Requirement: The time column must be named "Month" (case-sensitive). Apologies for the inconvenience.
+
 ---
 
 ## Features
