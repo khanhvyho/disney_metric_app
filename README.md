@@ -17,7 +17,7 @@ Requirement: The time column must be named "Month" (case-sensitive). Apologies f
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)  
 ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white)  
