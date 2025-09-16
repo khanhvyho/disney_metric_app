@@ -17,17 +17,6 @@ Monthly Growth Tracker is a lightweight dashboard for **visualizing monthly data
 
 ## 🛠 Tech Stack
 
-## 🛠 Tech Stack
-
-- **Python** – Programming language.
-- **Pandas** – Data manipulation and analysis. 
-- **NumPy** – Numerical computing.
-- **OpenPyXL** – Excel file handling.  
-- **Matplotlib & Seaborn** – Data visualization.  
-- **Streamlit** – Interactive dashboard framework.
-
-- ## 🛠 Tech Stack
-
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)  
 ![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white)  
 ![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)  
