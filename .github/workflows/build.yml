@@ -46,14 +46,23 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $IconFlag = (Test-Path icon.ico) ? "--icon icon.ico" : ""
-          pyinstaller --noconfirm --onefile --windowed `
-            --name "PartnerMetrics" `
-            --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl `
-            --add-data "app.py;." `
-            --add-data "src;src" `
-            $IconFlag `
-            run_app.py
+          # Build a robust args array (no fragile backticks)
+          $args = @(
+          '--noconfirm','--onefile','--windowed',
+          '--name','PartnerMetrics',
+          '--collect-all','streamlit',
+          '--collect-all','pandas',
+          '--collect-all','matplotlib',
+          '--collect-all','seaborn',
+          '--collect-all','openpyxl',
+          '--add-data','app.py;.',
+          '--add-data','src;src'
+          )
+          if (Test-Path 'icon.ico') { $args += @('--icon','icon.ico') }
+          # Ensure the script is always the final positional arg
+          if (-not (Test-Path 'run_app.py')) { Write-Error 'run_app.py not found at repo root'; exit 1 }
+          $args += 'run_app.py'
+          pyinstaller @args
 
       # -------- macOS build (onedir .app — reliable with your launcher) --------
       - name: Build (macOS)
