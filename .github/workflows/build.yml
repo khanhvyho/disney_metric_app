@@ -1,9 +1,7 @@
 name: Build desktop binaries
 
 on:
-  # Manual trigger from the Actions tab
   workflow_dispatch:
-  # Optional: build when you push a version tag like v1.0.0
   push:
     tags:
       - "v*"
@@ -24,33 +22,57 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt pyinstaller
 
-      # Build with the right --add-data separator per OS
-      - name: Build with PyInstaller (Windows)
+      - name: Verify versions (debug)
+        run: |
+          python -V
+          pyinstaller --version
+          python -c "import streamlit; import pandas; import matplotlib; print('streamlit', streamlit.__version__)"
+
+      # -------- Windows build (one-file .exe) --------
+      - name: Build (Windows)
         if: runner.os == 'Windows'
-        run: >
-          pyinstaller --noconfirm --onefile --windowed
-          --name "PartnerMetrics"
-          --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl
-          --add-data "app.py;."
-          --add-data "src;src"
-          run_app.py
+        shell: pwsh
+        run: |
+          $IconFlag = (Test-Path icon.ico) ? "--icon icon.ico" : ""
+          pyinstaller --noconfirm --onefile --windowed `
+            --name "PartnerMetrics" `
+            --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl `
+            --add-data "app.py;." `
+            --add-data "src;src" `
+            $IconFlag `
+            run_app.py
 
-      - name: Build with PyInstaller (macOS)
+      # -------- macOS build (onedir .app — reliable with your launcher) --------
+      - name: Build (macOS)
         if: runner.os == 'macOS'
-        run: >
-          pyinstaller --noconfirm --onefile --windowed
-          --name "PartnerMetrics"
-          --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl
-          --add-data "app.py:."
-          --add-data "src:src"
-          run_app.py
+        shell: bash
+        run: |
+          ICON_FLAG=""
+          [ -f icon.icns ] && ICON_FLAG="--icon icon.icns"
+          pyinstaller --noconfirm --onedir --windowed \
+            --name "PartnerMetrics" \
+            --collect-all streamlit --collect-all pandas --collect-all matplotlib --collect-all seaborn --collect-all openpyxl \
+            --add-data "app.py:." \
+            --add-data "src:src" \
+            $ICON_FLAG \
+            run_app.py
+          # Zip the .app so it downloads as a single file
+          ditto -c -k --sequesterRsrc --keepParent "dist/PartnerMetrics.app" "PartnerMetrics-macOS.zip"
 
-      # Upload artifacts so you can download the binaries from the Actions run
+      # -------- Artifacts --------
       - name: Upload Windows artifact
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
@@ -58,11 +80,11 @@ jobs:
           name: PartnerMetrics-Windows
           path: dist/PartnerMetrics.exe
 
-      - name: Upload macOS artifact
+      - name: Upload macOS artifacts (.app and zip)
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
           name: PartnerMetrics-macOS
           path: |
-            dist/PartnerMetrics
             dist/PartnerMetrics.app
+            PartnerMetrics-macOS.zip
