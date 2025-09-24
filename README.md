@@ -31,9 +31,9 @@ Requirement: The time column must be named "Month" (case-sensitive). Apologies f
 
 ## Download
 
-- MacOS: [sha256:7d5a8e8779de56946d2a1dbe608778c85d9a7bbdeab30b4a09e8f1fca727f65b  ](url)
-- Windows: [sha256:9af97b2800b1e043049c678f83539e0eb8bdd461cb815d746528871a3ba654a9](url)
-
+- [Download for Windows](https://github.com/<owner>/<repo>/releases/download/<tag>/PartnerMetrics-Windows.zip)
+- [Download for macOS](https://github.com/<owner>/<repo>/releases/download/<tag>/PartnerMetrics-macOS.zip)
+  
 ---
 
 
