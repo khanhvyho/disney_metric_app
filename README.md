@@ -26,7 +26,13 @@ Requirement: The time column must be named "Month" (case-sensitive). Apologies f
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-ffffff?logo=plotly&logoColor=3f4f75)  
 ![Seaborn](https://img.shields.io/badge/Seaborn-4C8CBF?logoColor=white)  
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)
-  
+
+---
+
+## Download
+
+- MacOS: [sha256:7d5a8e8779de56946d2a1dbe608778c85d9a7bbdeab30b4a09e8f1fca727f65b  ](url)
+- Windows: [sha256:9af97b2800b1e043049c678f83539e0eb8bdd461cb815d746528871a3ba654a9](url)
 
 ---
 
